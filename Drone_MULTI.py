@@ -6,6 +6,7 @@ DRONE3_IPADDR = '10.10.4.147'
 DRONE4_IPADDR = '10.10.4.148'
 DRONE5_IPADDR = '10.10.4.149'
 DRONE6_IPADDR = '10.10.4.152'
+
 tello_port = 8889
 drone1_address = (DRONE1_IPADDR, tello_port)
 drone2_address = (DRONE2_IPADDR, tello_port)
@@ -13,6 +14,7 @@ drone3_address = (DRONE3_IPADDR, tello_port)
 drone4_address = (DRONE4_IPADDR, tello_port)
 drone5_address = (DRONE5_IPADDR, tello_port)
 drone6_address = (DRONE6_IPADDR, tello_port)
+
 drones = [
     drone1_address,
     drone2_address,
@@ -21,6 +23,7 @@ drones = [
     drone5_address,
     drone6_address
     ]
+
 socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 for drone in drones:
     socket.sendto('command'.encode('utf-8'), drone)

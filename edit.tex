@@ -1,0 +1,84 @@
+
+Command	Description	
+Possible Response
+
+説明
+Command	Enter SDK mode.	ok / error	SDKモードを開始
+takeoff	Auto takeoff.	ok / error	離陸
+land	Auto landing.	ok / error	着陸
+streamon	Enable video stream.	ok / error	ビデオストリームを有効に
+streamoff	Disable video stream.	ok / error	ビデオストリームを無効に
+emergency	Stop motors immediately.	ok / error	即座にモーター停止
+up x	Ascend to “x” cm. x = 20-500	ok / error	20~500cmの間で上昇
+down x	down “x” Descend to “x” cm. x = 20-500	ok / error	20~500cmの間で下降
+left x	Fly left for “x” cm. “x” = 20-500	ok / error	20~500cmの間で左へ飛行
+right x	Fly right for “x” cm. “x” = 20-500	ok / error	20~500cmの間で右へ飛行
+forward x	Fly forward for “x” cm. “x” = 20-500	ok / error	20~500cmの間で前へ飛行
+back x	Fly backward for “x” cm. “x” = 20-500	ok / error	20~500cmの間で後ろへ飛行
+cw x	Rotate “x” degrees clockwise. “x” = 1-360	ok / error	時計回りに1~360度回転
+ccw x	Rotate “x” degrees counterclockwise. “x” = 1-360	ok / error	反時計回りに1~360度回転
+flip x	Flip in “x” direction. “l” = left
+“r” = right
+“f” = forward
+“b” = back	ok / error	反転
+go x y z speed	Fly to “x” “y” “z” at “speed” (cm/s).
+“x” = -500-500 “y” = -500-500 “z” = -500-500 “speed” = 10-100
+Note: “x”, “y”, and “z” values can’t be set between -20 – 20 simultaneously.	ok / error	指定した「スピード」（cm / s）で「x」、「y」、「z」の順に飛行。
+“ x” = -500-500
+“ y” = -500-500
+“ z” = -500-500
+“スピード” = 10-100
+注：「x」、「y」、「z」の値は、-20〜20の範囲で同時に設定することはできません。
+stop	Hovers in the air. Note: works at any time.	ok / error	空中で浮かぶ。
+注：いつでも機能します。
+curve x1 y1 z1 x2 y2 z2 speed	Fly at a curve according to the two given coordinates at “speed” (cm/s).
+If the arc radius is not within a range of 0.5-10 meters, it will respond with an error.
+“x1”, “x2” = -500-500 “y1”, “y2” = -500-500 “z1”, “z2” = -500-500 “speed” = 10-60
+Note: “x”, “y”, and “z” values can’t be set between -20 – 20 simultaneously.	ok / error	与えられた2つの座標に従って、指定した「スピード」（cm / s）でカーブしながら飛ぶ。
+円弧の半径が0.5〜10メートルの範囲内にない場合は、エラーで応答する。
+“ x1”、“ x2” = -500-500“
+y1”、“ y2” = -500-500“
+z1”、“ z2” = -500-500“ speed” = 10-60
+注：「x」、「y」、「z」の値は、-20〜20の範囲で同時に設定することはできません。
+go x y z speed mid	
+Fly to the “x”, “y”, and “z” coordinates of the Mission Pad.
+
+“mid” = m1-m8
+“x” = -500-500
+“y” = -500-500
+“z” = -500-500 “speed” = 10-100 (cm/s)
+
+Note: “x”, “y”, and “z” values can’t be set between -20 – 20 simultaneously.
+
+ok / error	Mission Padの “x”、 “y”、 “z”座標へ飛ぶ。
+“mid” = m1 – m8
+“ x” = -500-500
+“ y” = -500-500
+“ z” = -500-500
+“スピード” = 10-100（cm / s）
+
+注：「x」、「y」、「z」の値は、-20〜20の範囲で同時に設定することはできません。
+
+curve x1 y1 z1 x2 y2 z2 speed mid	Fly at a curve according to the two given coordinates of the Mission Pad ID at “speed” (cm/s).
+If the arc radius is not within a range of 0.5-10 meters, it will respond with an error.
+“x1”, “x2” = -500-500 “y1”, “y2” = -500-500 “z1”, “z2” = -500-500 “speed” = 10-60
+Note: “x”, “y”, and “z” values can’t be set between -20 – 20 simultaneously.		Mission Pad IDの2つの与えられた座標に従って、指定した「スピード」（cm / s）でカーブしながら飛ぶ。
+円弧の半径が0.5〜10メートルの範囲内にない場合は、エラーで応答します。
+“ x1”、“ x2” = -500-500
+“ y1”、“ y2” = -500-500
+“ z1”、“ z2” = -500-500
+“ speed” = 10-60
+注：「x」、「y」、「z」の値は、-20〜20の範囲で同時に設定することはできません。
+jump x y z speed yaw mid1 mid2	Fly to coordinates “x”, “y”, and “z” of Mission Pad 1, and recognize coordinates 0, 0, “z” of Mission Pad 2 and rotate to the yaw value.
+“mid” = m1-m8
+“x” = -500-500
+“y” = -500-500
+“z” = -500-500 “speed” = 10-100 (cm/s)
+Note: “x”, “y”, and “z” values can’t be set between -20 – 20 simultaneously.	ok / error	Mission Pad 1の座標「x」、「y」、および「z」へ移動し、ミッションパッド2の座標「0」、「0」、「z」を認識し、ヨー値まで回転させます。
+“mid” = m1 – m8
+“ x” = -500-500
+“ y” = -500-500
+“ z” = -500-500
+“スピード” = 10-100（cm / s）
+注：「x」、「y」、「z」の値は、-20〜20の範囲で同時に設定することはできません。
+ 
