@@ -19,6 +19,7 @@ class tellodrone():
                 self.ip = ip[start:end]
                 print("IPアドレス取得しました")
         
+        
         print(self.ip)
         self.port = 8889
         self.drone = (self.ip, self.port)
@@ -26,12 +27,18 @@ class tellodrone():
         self.start = self.socket.sendto('command'.encode('utf-8'), self.drone)
         self.response, ip = self.socket.recvfrom(1024)
         print('from {}: {}'.format(ip, self.response))
-    
+        
+        """
+        if (sys.argv[1] == True):
+                file = sys.argv[1]
+                with open(file) as f:
+                    self.list = f.readlines()
+                    print(self.list)
+        """    
     def TestFly(self):
         '''
         test mode to fly
         '''
-        self.start
         time.sleep(1)
         self.socket.sendto('takeoff'.encode('utf-8'), self.drone)
         time.sleep(3)
@@ -62,10 +69,10 @@ class tellodrone():
             print("停止します")
             sys.exit()
             
-    def CommandMode(self, commandList):
+    def CommandMode(self, commands):
         '''to controll for multi tello'''
         try:
-            for command in commandList:
+            for command in commands:
                 self.socket.sendto(command.encode('utf-8'), self.drone)
                 self.response, ip= self.socket.recvfrom(1024)
                 print('from {}: {}'.format(ip, self.response))
@@ -74,5 +81,4 @@ class tellodrone():
             self.socket.sendto("land".encode("utf-8"), self.drone)
             sys.exit()
         
-
 
