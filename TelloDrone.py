@@ -24,7 +24,7 @@ class tellodrone():
         self.port = 8889
         self.drone = (self.ip, self.port)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.start = self.socket.sendto('command'.encode('utf-8'), self.drone)
+        self.socket.sendto('command'.encode('utf-8'), self.drone)
         self.response, ip = self.socket.recvfrom(1024)
         print('from {}: {}'.format(ip, self.response))
         
@@ -50,7 +50,6 @@ class tellodrone():
         '''
         controll by terminal for single Tello
         '''
-        self.start
         try:
             while(1):
                 command = input("plz input command >>")
