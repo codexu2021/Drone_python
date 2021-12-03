@@ -1,83 +1,76 @@
-import time
 import socket
 import subprocess
 import sys
 
-class tellodrone():
-    def __init__(self, macAdress):
-        '''
-        config...
-        '''
-        self.macAdress = macAdress
-        self.arp = subprocess.run(['arp', '-a'], stdout=subprocess.PIPE, text=1)
+
+class DRONE():
+    def __init__(self, macaddr):
+        """intialize
+
+        Args:
+            macaddr (string): drone's mac address
+        """
+        self.macaddr = macaddr
+        self.arp = subprocess.run(
+            ["arp", "-a"], stdout=subprocess.PIPE, text=1)
         self.arp_list = self.arp.stdout.splitlines()
-        
+
         for ip in self.arp_list:
-            if (self.macAdress in ip):
+            if (self.macaddr in ip):
                 start = int(ip.find("(")) + 1
                 end = int(ip.find(")"))
                 self.ip = ip[start:end]
-                print("IPアドレス取得しました")
-        
-        
-        print(self.ip)
+                print(f"[INFO] IPアドレス取得しました: {self.ip}")
+        if self.ip is None:
+            print("[INFO] IPアドレスが見つかりませんでした")
+            print(self.arp_list)
+            sys.exit()
+
         self.port = 8889
         self.drone = (self.ip, self.port)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.socket.sendto('command'.encode('utf-8'), self.drone)
-        self.response, ip = self.socket.recvfrom(1024)
-        print('from {}: {}'.format(ip, self.response))
-        
-        """
-        if (sys.argv[1] == True):
-                file = sys.argv[1]
-                with open(file) as f:
-                    self.list = f.readlines()
-                    print(self.list)
-        """    
-    def TestFly(self):
-        '''
-        test mode to fly
-        '''
-        time.sleep(1)
-        self.socket.sendto('takeoff'.encode('utf-8'), self.drone)
-        time.sleep(3)
-        self.socket.sendto('land'.encode('utf-8'), self.drone)
-        print("飛行テスト")
-    
-    
-    def CommandFly(self,bool):  
-        '''
-        controll by terminal for single Tello
-        '''
-        try:
-            while(1):
-                command = input("plz input command >>")
-                self.socket.sendto(command.encode('utf-8'), self.drone)
-                self.response, ip = self.socket.recvfrom(1024)
-                if bool == 1:
-                    print('from {}: {}'.format(ip, self.response))
-                    
-        except KeyboardInterrupt:
-            print("緊急着陸します")
-            self.socket.sendto("land".encode("utf-8"), self.drone)
-            sys.exit()
-        except Exception as e:
-            print(e)
-            self.socket.sendto("land".encode("utf-8"), self.drone)
-            print("停止します")
-            sys.exit()
-            
-    def CommandMode(self, commands):
-        '''to controll for multi tello'''
-        try:
-            for command in commands:
-                self.socket.sendto(command.encode('utf-8'), self.drone)
-                self.response, ip= self.socket.recvfrom(1024)
-                print('from {}: {}'.format(ip, self.response))
-        except(KeyboardInterrupt):
-            print("緊急着陸します")
-            self.socket.sendto("land".encode("utf-8"), self.drone)
-            sys.exit()
-        
+        self.socket.sendto("command".encode("utf-8"), self.drone)
+        response, _ = self.socket.recvfrom(1024)
+        print("from {}: {}".format(self.ip, response))
 
+    def __exec_command(self, command: str) -> str:
+        try:
+            self.socket.sendto(command.encode("utf-8"), self.drone)
+            response, _ = self.socket.recvfrom(1024)
+            if response == b"ok":
+                return "[INFO] コマンドを実行しました -> send {} to {} res {}".format(
+                    command, self.ip, response)
+            else:
+                if response in b"unknown command:":
+                    return f"[INFO] コマンドの実行に失敗しました -> {command}というコマンドは存在しません。"
+                else:
+                    return f"[INFO] コマンドの実行に失敗しました -> {response}"
+        except(KeyboardInterrupt):
+            self.socket.sendto("land".encode("utf-8"), self.drone)
+            response, _ = self.socket.recvfrom(1024)
+            return "[INFO] 緊急着陸しました -> {}".format(
+                response)
+
+    def fly_test(self) -> str:
+        """
+        test mode to fly
+        """
+        commands = ["takeoff", "land"]
+        for command in commands:
+            print(self.__exec_command(command))
+
+    def inline_exec(self, wait=True):
+        """
+        controll by terminal for single Tello
+        """
+        while(True):
+            command = input("plz input command >>")
+            if command == "exit" or "land":
+                print(self.__exec_command("land"))
+                sys.exit()
+            print(self.__exec_command(command))
+            # if wait = 1:
+
+    def emergency_land(self):
+        # 危ないよ！ 緊急停止!
+        print(self.__exec_command("emergency"))
