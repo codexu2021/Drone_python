@@ -59,7 +59,7 @@ class tellodrone():
         except Exception as e:
             print(e)
             self.socket.sendto("land".encode("utf-8"), self.drone)
-            ("停止します")
+            print("停止します")
             sys.exit()
             
     def CommandMode(self, commandList):
