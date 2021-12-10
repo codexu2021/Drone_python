@@ -4,35 +4,21 @@ import sys
 
 
 class DRONE():
-    def __init__(self, macaddr):
+    def __init__(self):
         """intialize
 
-        Args:
-            macaddr (string): drone's mac address
+        Args: none
+            first set up to controll drone 
         """
-        self.macaddr = macaddr
-        self.arp = subprocess.run(
-            ["arp", "-a"], stdout=subprocess.PIPE, text=1)
-        self.arp_list = self.arp.stdout.splitlines()
+        self.command_port = 8889
+        self.stat_port = 8890
 
-        for ip in self.arp_list:
-            if (self.macaddr in ip):
-                start = int(ip.find("(")) + 1
-                end = int(ip.find(")"))
-                self.ip = ip[start:end]
-                print(f"[INFO] IPアドレス取得しました: {self.ip}")
-        if self.ip is None:
-            print("[INFO] IPアドレスが見つかりませんでした")
-            print(self.arp_list)
-            sys.exit()
-
-        self.port = 8889
-        self.drone = (self.ip, self.port)
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.socket.sendto("command".encode("utf-8"), self.drone)
+    def battery_stat(self):
+        drone_stat = (self.ip, self.stat_port)
+        self.socket.sendto("battery?".encode("utf-8"),drone_stat)
         response, _ = self.socket.recvfrom(1024)
-        print("from {}: {}".format(self.ip, response))
-
+        print("バッテリー残量: {}%:".format(response))
+        
     def __exec_command(self, command: str) -> str:
         try:
             self.socket.sendto(command.encode("utf-8"), self.drone)
@@ -50,6 +36,33 @@ class DRONE():
             response, _ = self.socket.recvfrom(1024)
             return "[INFO] 緊急着陸しました -> {}".format(
                 response)
+            
+    def set_ip(self,macaddr):
+        arp = subprocess.run(
+            ["arp", "-a"], stdout=subprocess.PIPE, text=1)
+        arp_list = arp.stdout.splitlines()
+
+        for ip in arp_list:
+            if (macaddr in ip):
+                start = int(ip.find("(")) + 1
+                end = int(ip.find(")"))
+                self.ip = ip[start:end]
+                print(f"[INFO] IPアドレス取得しました: {self.ip}")
+        if ip is None:
+            print("[INFO] IPアドレスが見つかりませんでした")
+            print(arp_list)
+            sys.exit()
+            
+        self.drone = (self.ip, self.command_port)
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket.sendto("command".encode("utf-8"), self.drone)
+        response, _ = self.socket.recvfrom(1024)
+        print("from {}: {}".format(self.ip, response))
+            
+    def get_ip(self):
+        if self.ip ==None:
+            print("set_ipを実行してね！")
+        print(self.ip)
 
     def fly_test(self) -> str:
         """
@@ -72,5 +85,5 @@ class DRONE():
             # if wait = 1:
 
     def emergency_land(self):
-        # 危ないよ！ 緊急停止!
+        # 危ないよ！ 緊急停止! (急に落ちます)
         print(self.__exec_command("emergency"))

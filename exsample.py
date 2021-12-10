@@ -1,7 +1,23 @@
 from TelloDrone import DRONE
 
 
-tello = DRONE("34:d2:62:9f:18:0")
+telloA = DRONE()
+telloB = DRONE()
+telloA.set_ip("macaddr")
+telloB.set_ip("macaddr")
+telloA.get_ip()
+telloA.battery_stat()
 # macアドレスを入力
 
-tello.fly_test()
+telloA.fly_test()
+
+import threading
+
+#2台を並列処理
+threadA = threading.Thread(target=telloA.fly_test)
+threadB = threading.Thread(target=telloB.fly_test)
+threadA.start()
+threadB.start()
+threadA.join()
+threadB.join()
+print("テスト飛行の終了")
