@@ -14,8 +14,7 @@ class DRONE():
         self.stat_port = 8890
 
     def battery_stat(self):
-        drone_stat = (self.ip, self.stat_port)
-        self.socket.sendto("battery?".encode("utf-8"),drone_stat)
+        self.socket.sendto("battery?".encode("utf-8"),self.drone)
         response, _ = self.socket.recvfrom(1024)
         print("バッテリー残量: {}%:".format(response))
         

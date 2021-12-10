@@ -8,6 +8,7 @@
 - Tello EDUが操作する PC と同じwi-fiに接続している
 
 ## メソッド
+- set_ip() -> macaddrからipアドレスをサーチ
 - fly_test() -> 命令できるかテスト
 - inline_exec() -> インラインでコマンドを打つ
 
